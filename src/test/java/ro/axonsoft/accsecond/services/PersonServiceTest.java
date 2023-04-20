@@ -12,6 +12,7 @@ import ro.axonsoft.accsecond.dto.PersonDTO;
 import ro.axonsoft.accsecond.dto.RoomDTO;
 import ro.axonsoft.accsecond.entities.PersonEntity;
 import ro.axonsoft.accsecond.entities.RoomEntity;
+import ro.axonsoft.accsecond.exceptions.BadRequestException;
 import ro.axonsoft.accsecond.helpers.CustomModelMapper;
 import ro.axonsoft.accsecond.repositories.PersonEntityRepository;
 
@@ -55,38 +56,62 @@ public class PersonServiceTest {
         assertEquals("fsupper", personDTO.getLdapUser());
     }
 
+    @Test(expected = BadRequestException.class)
+    public void createNewPersonShouldFailWithBadRequest() {
+        PersonEntity person = PersonEntity.builder().firstName("Frank").lastName("Supper").title("Dr.").nameAddition("von").ldapUser("fsupper").build();
+        RoomDTO roomDTO = RoomDTO.builder().roomNumber("1111").build();
+        when(personEntityRepository.findPersonByLdapUser("fsupper")).thenReturn(person);
+        personService.createAndSavePerson("Frank", "Supper", "Dr.","von","fsupper", roomDTO);
+    }
+
     @Test
-    public void createNewPersonShouldPass() {
+    public void testCreateAndSaveNewPerson() {
+        PersonEntity personEntity = Mockito.mock(PersonEntity.class);
+        RoomEntity roomEntity = Mockito.mock(RoomEntity.class);
+        personEntity.setRoom(roomEntity);
 
-        PersonEntity entity = Mockito.mock(PersonEntity.class);
-        RoomEntity roomEntity =  Mockito.mock(RoomEntity.class);
-        entity.setRoom(roomEntity);
+        PersonDTO personDTO = personService.setPersonDTO("Frank", "Supper", "Dr.", "von", "fsupper");
+        RoomDTO roomDTO = RoomDTO.builder().build();
+        List<PersonDTO> personDTOS = new ArrayList<>();
+        personDTOS.add(personDTO);
+        when(customModelMapper.mapPersonDtoToPersonEntity(personDTO)).thenReturn(personEntity);
+        when(customModelMapper.mapRoomDtoToRoomEntity(roomDTO)).thenReturn(roomEntity);
 
-        when(personEntityRepository.save(entity)).thenReturn(entity);
-        PersonDTO firstDummyDTO = personService.setPersonDTO("Frank", "Supper", "Dr.", "von", "fsupper");
-        personDTOList.add(firstDummyDTO);
+        when(personEntityRepository.save(personEntity)).thenReturn(PersonEntity.builder().build());
 
-        RoomDTO roomDTO = new RoomDTO( 1L,"1111", personDTOList);
-        personService.savePerson(firstDummyDTO, roomDTO);
-
-
-
-        when(personEntityRepository.save(Mockito.any(PersonEntity.class)))
-                .thenReturn(PersonEntity.builder().firstName("Frank").lastName("Supper").title("Dr.").nameAddition("von")
-                        .ldapUser("fsupper")
-                        .room(RoomEntity.builder()
-                                .roomNumber("1111")
-                                .people(Collections.singletonList(PersonEntity.builder()
-                                        .id(1L)
-                                        .firstName("Frank")
-                                        .lastName("Supper")
-                                        .title("Dr.")
-                                        .nameAddition("von")
-                                        .ldapUser("fsupper").build())).build())
-                        .build());
-
-        verify(personEntityRepository, times(1)).save(Mockito.any(PersonEntity.class));
+        personService.savePerson(personDTO,roomDTO);
 
     }
 
+    @Test
+    public void testSavePersonShouldPass() {
+        PersonEntity personEntity = Mockito.mock(PersonEntity.class);
+        RoomEntity roomEntity = Mockito.mock(RoomEntity.class);
+        personEntity.setRoom(roomEntity);
+        when(personEntityRepository.save(personEntity)).thenReturn(PersonEntity.builder().build());
+
+        PersonDTO personDTO = Mockito.mock(PersonDTO.class);
+        RoomDTO roomDTO = Mockito.mock(RoomDTO.class);
+
+        when(customModelMapper.mapPersonDtoToPersonEntity(personDTO)).thenReturn(personEntity);
+        when(customModelMapper.mapRoomDtoToRoomEntity(roomDTO)).thenReturn(roomEntity);
+
+        personService.savePerson(personDTO, roomDTO);
+        verify(personEntityRepository, times(1)).save(Mockito.any(PersonEntity.class));
+    }
+
+    @Test
+    public void testDeleteAllPersons() {
+        PersonEntity person = PersonEntity.builder().firstName("Frank").lastName("Supper").title("Dr.").nameAddition("von").ldapUser("fsupper").build();
+        PersonEntity person1 = PersonEntity.builder().firstName("Frank").lastName("Supper").title("Dr.").nameAddition("von").ldapUser("fsupper").build();
+        List<PersonEntity> personEntities = new ArrayList<>();
+        personEntities.add(person1);
+        personEntities.add(person);
+
+        when(personEntityRepository.findAll()).thenReturn(personEntities);
+
+        personService.deletePersons();
+        verify(personEntityRepository, times(1)).deleteAll();
+
+    }
 }
