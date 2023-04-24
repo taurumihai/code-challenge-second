@@ -1,5 +1,8 @@
 package ro.axonsoft.accsecond.helpers;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class ResponseMessage {
 
     private String message;

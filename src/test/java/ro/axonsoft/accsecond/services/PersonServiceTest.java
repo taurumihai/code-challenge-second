@@ -17,7 +17,6 @@ import ro.axonsoft.accsecond.helpers.CustomModelMapper;
 import ro.axonsoft.accsecond.repositories.PersonEntityRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,9 +33,6 @@ public class PersonServiceTest {
 
     @Mock
     private CustomModelMapper customModelMapper;
-
-    private List<PersonDTO> personDTOList = new ArrayList<>();
-
 
     @BeforeEach
     public void initServices() {
@@ -72,8 +68,6 @@ public class PersonServiceTest {
 
         PersonDTO personDTO = personService.setPersonDTO("Frank", "Supper", "Dr.", "von", "fsupper");
         RoomDTO roomDTO = RoomDTO.builder().build();
-        List<PersonDTO> personDTOS = new ArrayList<>();
-        personDTOS.add(personDTO);
         when(customModelMapper.mapPersonDtoToPersonEntity(personDTO)).thenReturn(personEntity);
         when(customModelMapper.mapRoomDtoToRoomEntity(roomDTO)).thenReturn(roomEntity);
 
@@ -112,6 +106,5 @@ public class PersonServiceTest {
 
         personService.deletePersons();
         verify(personEntityRepository, times(1)).deleteAll();
-
     }
 }
