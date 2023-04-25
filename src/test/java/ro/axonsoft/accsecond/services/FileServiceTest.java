@@ -53,7 +53,6 @@ public class FileServiceTest {
     @Before
     public void initMocksTests() {
 
-        fileHelper = Mockito.mock(FileHelper.class);
         personEntityRepository = Mockito.mock(PersonEntityRepository.class);
         roomEntityRepository = Mockito.mock(RoomEntityRepository.class);
         customModelMapper = Mockito.mock(CustomModelMapper.class);
