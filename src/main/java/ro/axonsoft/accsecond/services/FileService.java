@@ -12,6 +12,7 @@ import ro.axonsoft.accsecond.exceptions.NumberFormatException;
 import ro.axonsoft.accsecond.helpers.*;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
@@ -31,7 +32,7 @@ public class FileService {
         this.customModelMapper = customModelMapper;
     }
 
-    public ResponseEntity<?> parseFile(MultipartFile file) throws Exception {
+    public ResponseEntity<?> parseFile(MultipartFile file){
 
         if (FileHelper.isNullOrEmptyFile(file)) {
             throw new BadRequestException(new ResponseMessage(ResponseMessageConstants.MISSING_FILE,
@@ -43,7 +44,7 @@ public class FileService {
         return readFileContent(file);
     }
 
-    private ResponseEntity<?> readFileContent(MultipartFile file) throws Exception {
+    private ResponseEntity<?> readFileContent(MultipartFile file) throws NumberFormatException {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line = null;
@@ -75,8 +76,8 @@ public class FileService {
                 }
             }
 
-        }   catch (Exception ex) {
-                throw new Exception(ex.getMessage());
+        }   catch (NumberFormatException | IOException ex) {
+                throw new NumberFormatException(new ResponseMessage(ex.getMessage(), "400"));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(ResponseMessageConstants.SUCCESS, ResponseMessageConstants.SUCCESS_CODE));
