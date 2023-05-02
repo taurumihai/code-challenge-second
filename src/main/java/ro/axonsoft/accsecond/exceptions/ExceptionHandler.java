@@ -28,6 +28,16 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getResponseMessage());
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = RoomNotFoundException.class)
+    public ResponseEntity<ResponseMessage> demoRoomNotFoundException(RoomNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getResponseMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = PersonAlreadyDefinedException.class)
+    public ResponseEntity<ResponseMessage> demoPersonAlreadyDefinedException(PersonAlreadyDefinedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getResponseMessage());
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ResponseMessage> handleWrongMethodExceptions(Exception e){
         responseMessage = new ResponseMessage(METHOD_NOT_ALLOWED,METHOD_NOT_ALLOWED_ERROR_CODE);

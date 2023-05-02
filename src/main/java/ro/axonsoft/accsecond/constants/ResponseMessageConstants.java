@@ -37,4 +37,10 @@ public final class ResponseMessageConstants {
      * */
     public static final String ROOM_NOT_FOUND = "Room not found!";
     public static final String ROOM_NOT_FOUND_ERROR_CODE = "5";
+
+    /*
+     * Incorrect format for room number
+     * */
+    public static final String ROOM_NUMBER_NOT_OK = "Incorrect format for room number!";
+    public static final String ROOM_NUMBER_NOT_OK_ERROR_CODE = "5";
 }

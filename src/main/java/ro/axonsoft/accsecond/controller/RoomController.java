@@ -7,13 +7,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ro.axonsoft.accsecond.constants.ResponseMessageConstants;
+import ro.axonsoft.accsecond.dto.PersonDTO;
 import ro.axonsoft.accsecond.dto.RoomDTO;
+import ro.axonsoft.accsecond.entities.PersonEntity;
+import ro.axonsoft.accsecond.entities.RoomEntity;
 import ro.axonsoft.accsecond.exceptions.BadRequestException;
+import ro.axonsoft.accsecond.exceptions.NumberFormatException;
+import ro.axonsoft.accsecond.exceptions.PersonAlreadyDefinedException;
+import ro.axonsoft.accsecond.exceptions.RoomNotFoundException;
+import ro.axonsoft.accsecond.helpers.CustomModelMapper;
 import ro.axonsoft.accsecond.helpers.FileHelper;
 import ro.axonsoft.accsecond.helpers.ResponseMessage;
+import ro.axonsoft.accsecond.helpers.StringHelper;
 import ro.axonsoft.accsecond.services.FileService;
+import ro.axonsoft.accsecond.services.PersonService;
 import ro.axonsoft.accsecond.services.RoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,10 +34,16 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    private final PersonService personService;
+
+    private final CustomModelMapper customModelMapper;
+
     @Autowired
-    public RoomController(FileService fileService, RoomService roomService) {
+    public RoomController(FileService fileService, RoomService roomService, PersonService personService, CustomModelMapper customModelMapper) {
         this.fileService = fileService;
         this.roomService = roomService;
+        this.personService = personService;
+        this.customModelMapper = customModelMapper;
     }
 
     @PostMapping("/import")
@@ -55,6 +71,33 @@ public class RoomController {
     public ResponseEntity<?> getRooms() {
         List<RoomDTO> roomDTOList = roomService.getAllRooms();
         return new ResponseEntity<>(roomDTOList, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/room/update/{roomNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateRoom(@RequestBody RoomEntity roomEntity, @PathVariable String roomNumber) {
+
+        if (!StringHelper.isDigitAndLengthIs4(roomNumber)) {
+            throw new NumberFormatException(new ResponseMessage(ResponseMessageConstants.ROOM_NUMBER_NOT_OK, ResponseMessageConstants.ROOM_NUMBER_NOT_OK_ERROR_CODE));
+        }
+
+        RoomDTO findRoomByRoomNumber = roomService.getRoomByRoomNumber(roomNumber);
+        if (findRoomByRoomNumber == null) {
+            throw new RoomNotFoundException(new ResponseMessage(ResponseMessageConstants.ROOM_NOT_FOUND, ResponseMessageConstants.ROOM_NOT_FOUND_ERROR_CODE));
+        }
+
+        for (PersonEntity personEntity : roomEntity.getPeople()) {
+            PersonDTO personDTO = personService.findPersonByLdapUser(personEntity.getLdapUser());
+            if (personDTO == null) {
+                PersonDTO saveNewPerson = customModelMapper.mapPersonEntityToPersonDTO(personEntity);
+                personService.savePerson(saveNewPerson, findRoomByRoomNumber);
+                findRoomByRoomNumber.getPeople().add(saveNewPerson);
+            }
+        }
+        roomService.saveRoom(findRoomByRoomNumber);
+
+
+        return new ResponseEntity<>(findRoomByRoomNumber, HttpStatus.OK);
+
     }
 
 }

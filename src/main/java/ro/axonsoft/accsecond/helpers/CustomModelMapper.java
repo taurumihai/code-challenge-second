@@ -32,12 +32,16 @@ public class CustomModelMapper {
 
     public RoomDTO mapRoomEntityToRoomDTO(RoomEntity entity){
         List<PersonDTO> people = new ArrayList<>();
-        for (PersonEntity personEntity : entity.getPeople()) {
-            people.add(mapPersonEntityToPersonDTO(personEntity));
+
+        if (entity != null) {
+            for (PersonEntity personEntity : entity.getPeople()) {
+                people.add(mapPersonEntityToPersonDTO(personEntity));
+            }
+            return RoomDTO.builder().id(entity.getId()).roomNumber(entity.getRoomNumber())
+                    .people(people)
+                    .build();
         }
-        return RoomDTO.builder().id(entity.getId()).roomNumber(entity.getRoomNumber())
-                .people(people)
-                .build();
+        return null;
     }
 
     public PersonDTO mapPersonEntityToPersonDTO(PersonEntity entity){

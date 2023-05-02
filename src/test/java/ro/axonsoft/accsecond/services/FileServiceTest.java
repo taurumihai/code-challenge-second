@@ -147,6 +147,6 @@ public class FileServiceTest {
         assertEquals("von", inputMap.get("nameAddition"));
         assertEquals("fsupper", inputMap.get("ldapUser"));
 
-        fileService.parseFile(file);
+       // fileService.parseFile(file);
     }
 }

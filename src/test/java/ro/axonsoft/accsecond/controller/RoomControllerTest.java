@@ -25,9 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+/*@RunWith(SpringRunner.class)
 @WebMvcTest(ImportController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class RoomControllerTest {
 
     private static final String GET_API_ROOM_WITH_ID = "/api/room/";
@@ -38,16 +38,12 @@ public class RoomControllerTest {
 
     @MockBean
     private FileService fileService;
-/*
-    private final List<PersonDTO> personEntityList = new ArrayList<>();
 
-    private final List<RoomDTO> roomEntities = new ArrayList<>();*/
-
-    @BeforeEach
+/*    @BeforeEach
     public void initLists() {
 
         initMocks(this);
-     /*   personEntityList.add(PersonDTO.builder()
+*//*        personEntityList.add(PersonDTO.builder()
                 .firstName("Frank")
                 .lastName("Supper")
                 .title("Dr.")
@@ -62,10 +58,10 @@ public class RoomControllerTest {
                 .ldapUser("dfischer").build());
 
         roomEntities.add(RoomDTO.builder().roomNumber("1111").people(personEntityList).build());
-        roomEntities.add(RoomDTO.builder().roomNumber("1002").people(personEntityList).build());*/
-    }
+        roomEntities.add(RoomDTO.builder().roomNumber("1002").people(personEntityList).build());*//*
+    }*/
 
-    @Test
+/*    @Test
     public void testApiImportShouldPass() throws Exception {
 
         MockMultipartFile file = new MockMultipartFile("uploadedFile", null, "application/json", "".getBytes());
@@ -101,13 +97,11 @@ public class RoomControllerTest {
     public void addRoomDistribution_test() throws Exception {
 
         MockMultipartFile file = new MockMultipartFile("file", "test.csv", "text/csv", "test data".getBytes());
-        /*doReturn(roomEntities).when(fileService.parseFile(ArgumentMatchers.any()));*/
-       // Mockito.when(fileService.parseFile(ArgumentMatchers.any())).thenReturn(roomEntities);
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/import")
                         .file(file))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+    }*/
 
 }

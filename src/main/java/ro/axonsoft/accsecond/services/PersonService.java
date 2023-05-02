@@ -65,4 +65,8 @@ public class PersonService {
         return personDTO;
     }
 
+    public PersonDTO findPersonByLdapUser(String ldapUser) {
+        return personEntityRepository.findPersonByLdapUser(ldapUser) != null? customModelMapper.mapPersonEntityToPersonDTO(personEntityRepository.findPersonByLdapUser(ldapUser)) : null;
+    }
+
 }

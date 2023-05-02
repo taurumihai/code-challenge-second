@@ -1,6 +1,7 @@
 package ro.axonsoft.accsecond.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 @Table(name = "person_table", schema = "public")
-@ToString
 public class PersonEntity {
 
     @Id
@@ -21,23 +21,29 @@ public class PersonEntity {
     private Long id;
 
     @Column(name = "first_name")
+    @JsonProperty("first name")
     private String firstName;
 
     @Column(name = "last_name")
+    @JsonProperty("last name")
     private String lastName;
 
     @Column(name = "title")
+    @JsonProperty("title")
     private String title;
 
     @Column(name = "name_addition")
+    @JsonProperty("name addition")
     private String nameAddition;
 
     @Column(name = "ldap_user")
+    @JsonProperty("ldapuser")
     private String ldapUser;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="room_id", nullable=false)
+    @ToString.Exclude
     private RoomEntity room;
 
     public PersonEntity(Long id, String firstName, String lastName, String title, String nameAddition, String ldapUser, RoomEntity room) {

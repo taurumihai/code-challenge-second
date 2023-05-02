@@ -32,7 +32,7 @@ public class RoomService {
     }
 
     public RoomDTO getRoomByRoomNumber(String roomNumber) {
-        return customModelMapper.mapRoomEntityToRoomDTO(roomEntityRepository.findRoomByRoomNumber(roomNumber));
+        return roomEntityRepository.findRoomByRoomNumber(roomNumber) != null ? customModelMapper.mapRoomEntityToRoomDTO(roomEntityRepository.findRoomByRoomNumber(roomNumber)) : null;
     }
 
     public void deleteRooms() {
