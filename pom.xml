@@ -11,7 +11,7 @@
 	<groupId>ro.axonsoft</groupId>
 	<artifactId>acc-second</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>acc-second</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -68,6 +68,21 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>17</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>14</source>
+					<target>14</target>
 				</configuration>
 			</plugin>
 		</plugins>
